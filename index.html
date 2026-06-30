@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Compass</title>
+<style>
+  html,body{height:100%;margin:0}
+  body{background:#0b0f14;color:#9fb0c0;font:16px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+       display:grid;place-items:center;text-align:center}
+  .ring{width:34px;height:34px;border:3px solid #1d2733;border-top-color:#e3b341;border-radius:50%;
+        margin:0 auto 16px;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  a{color:#e3b341}
+  .sub{color:#5d6b7a;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<div>
+  <div class="ring"></div>
+  <div id="msg">Connecting to Compass…</div>
+  <div class="sub">your permanent link — always routes to the live terminal</div>
+</div>
+<script>
+  // Always fetch the current tunnel URL (cache-busted) and redirect to it.
+  fetch('url.txt?cb=' + Date.now(), {cache: 'no-store'})
+    .then(function (r) { return r.text(); })
+    .then(function (u) {
+      u = (u || '').trim();
+      if (/^https:\/\/[a-z0-9.-]+\.trycloudflare\.com/.test(u)) {
+        location.replace(u);
+      } else {
+        document.getElementById('msg').textContent = 'Compass tunnel appears to be offline.';
+        document.querySelector('.ring').style.display = 'none';
+      }
+    })
+    .catch(function () {
+      document.getElementById('msg').innerHTML =
+        'Could not load the Compass link. <a href="javascript:location.reload()">Retry</a>';
+      document.querySelector('.ring').style.display = 'none';
+    });
+</script>
+</body>
+</html>
